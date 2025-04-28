@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Save Alex's Contact</title>
+  <title>Contact Information</title>
   <style>
     body { font-family: Arial, sans-serif; padding: 20px; }
     .hidden { display: none; }
@@ -10,9 +10,15 @@
 </head>
 <body>
 
-<h1>Save Contact</h1>
+<h1>Contact Information</h1>
 <p id="message">Loading...</p>
-<a id="saveLink" class="hidden" download="AlexPan.vcf">Save to Contacts</a>
+<div id="contactInfo" class="hidden">
+  <p><strong>Name:</strong> <span id="fullName"></span></p>
+  <p><strong>Email:</strong> <span id="email"></span></p>
+  <p><strong>Phone:</strong> <span id="phone"></span></p>
+  <p><strong>Instagram:</strong> <a id="instagram" href="#" target="_blank">Profile</a></p>
+  <a id="saveLink" class="hidden" download="AlexPan.vcf">Save to Contacts</a>
+</div>
 
 <script>
   function getVCardData() {
@@ -23,6 +29,11 @@
   function init() {
     const vcardEncoded = getVCardData();
     const message = document.getElementById('message');
+    const contactInfo = document.getElementById('contactInfo');
+    const fullName = document.getElementById('fullName');
+    const email = document.getElementById('email');
+    const phone = document.getElementById('phone');
+    const instagram = document.getElementById('instagram');
     const saveLink = document.getElementById('saveLink');
 
     if (!vcardEncoded) {
@@ -31,16 +42,41 @@
     }
 
     const vcardDecoded = decodeURIComponent(vcardEncoded);
+    const vCardData = parseVCard(vcardDecoded);
+
+    fullName.textContent = vCardData.FN;
+    email.textContent = vCardData.EMAIL;
+    phone.textContent = vCardData.TEL;
+    instagram.href = vCardData.SOCIALPROFILE;
 
     const blob = new Blob([vcardDecoded], { type: 'text/vcard;charset=utf-8' });
     const url = URL.createObjectURL(blob);
-
     saveLink.href = url;
     saveLink.classList.remove('hidden');
-    message.textContent = "Tap below to save the contact:";
+
+    contactInfo.classList.remove('hidden');
+    message.textContent = "Contact information loaded. You can save it below.";
+  }
+
+  function parseVCard(vcard) {
+    const lines = vcard.split('\n');
+    const data = {};
+    lines.forEach(line => {
+      const [key, value] = line.split(':');
+      if (key && value) {
+        data[key.replace(/;/g, '')] = value;
+      }
+    });
+    return data;
   }
 
   window.onload = init;
+
+  // Optional: Clear contact info when the user leaves the page
+  window.onbeforeunload = function() {
+    const contactInfo = document.getElementById('contactInfo');
+    contactInfo.classList.add('hidden');
+  };
 </script>
 
 </body>
