@@ -12,22 +12,45 @@
 
 <h1>Contact Information</h1>
 <p id="message">Loading...</p>
+
 <div id="contactInfo" class="hidden">
   <p><strong>Name:</strong> <span id="fullName"></span></p>
   <p><strong>Email:</strong> <span id="email"></span></p>
   <p><strong>Phone:</strong> <span id="phone"></span></p>
   <p><strong>Instagram:</strong> <a id="instagram" href="#" target="_blank">Profile</a></p>
-  <a id="saveLink" class="hidden" download="AlexPan.vcf">Save to Contacts</a>
+  <a id="saveLink" class="hidden" download="contact.vcf">Save to Contacts</a>
 </div>
 
 <script>
-  function getVCardData() {
-    const params = new URLSearchParams(window.location.search);
-    return params.get('vcard');
+  function getVCardDataFromHash() {
+    const hash = window.location.hash.substring(1); // removes '#'
+    return hash ? decodeURIComponent(hash) : null;
+  }
+
+  function parseVCard(vcard) {
+    const lines = vcard.split(/\r?\n/);
+    const data = {};
+
+    lines.forEach(line => {
+      if (line.startsWith('FN:')) {
+        data.fullName = line.substring(3);
+      } else if (line.startsWith('EMAIL')) {
+        const parts = line.split(':');
+        data.email = parts[1];
+      } else if (line.startsWith('TEL')) {
+        const parts = line.split(':');
+        data.phone = parts[1];
+      } else if (line.startsWith('X-SOCIALPROFILE')) {
+        const parts = line.split(':');
+        data.instagram = parts[1];
+      }
+    });
+
+    return data;
   }
 
   function init() {
-    const vcardEncoded = getVCardData();
+    const vcardDecoded = getVCardDataFromHash();
     const message = document.getElementById('message');
     const contactInfo = document.getElementById('contactInfo');
     const fullName = document.getElementById('fullName');
@@ -36,47 +59,30 @@
     const instagram = document.getElementById('instagram');
     const saveLink = document.getElementById('saveLink');
 
-    if (!vcardEncoded) {
-      message.textContent = "No contact info available. Please scan the NFC tag.";
+    if (!vcardDecoded) {
+      message.textContent = "No contact info found. Please scan the NFC tag.";
       return;
     }
 
-    const vcardDecoded = decodeURIComponent(vcardEncoded);
-    const vCardData = parseVCard(vcardDecoded);
+    const contact = parseVCard(vcardDecoded);
 
-    fullName.textContent = vCardData.FN;
-    email.textContent = vCardData.EMAIL;
-    phone.textContent = vCardData.TEL;
-    instagram.href = vCardData.SOCIALPROFILE;
+    fullName.textContent = contact.fullName || 'N/A';
+    email.textContent = contact.email || 'N/A';
+    phone.textContent = contact.phone || 'N/A';
+    instagram.href = contact.instagram || '#';
+    instagram.textContent = contact.instagram ? 'Instagram Profile' : 'No Instagram';
 
+    // Create downloadable VCF
     const blob = new Blob([vcardDecoded], { type: 'text/vcard;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     saveLink.href = url;
     saveLink.classList.remove('hidden');
 
     contactInfo.classList.remove('hidden');
-    message.textContent = "Contact information loaded. You can save it below.";
-  }
-
-  function parseVCard(vcard) {
-    const lines = vcard.split('\n');
-    const data = {};
-    lines.forEach(line => {
-      const [key, value] = line.split(':');
-      if (key && value) {
-        data[key.replace(/;/g, '')] = value;
-      }
-    });
-    return data;
+    message.textContent = "Contact loaded! Save if you want.";
   }
 
   window.onload = init;
-
-  // Optional: Clear contact info when the user leaves the page
-  window.onbeforeunload = function() {
-    const contactInfo = document.getElementById('contactInfo');
-    contactInfo.classList.add('hidden');
-  };
 </script>
 
 </body>
