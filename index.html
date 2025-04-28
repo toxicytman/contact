@@ -110,7 +110,7 @@
     .fish {
       position: absolute;
       font-size: 30px;
-      z-index: 2;
+      z-index: 5; /* Fish should be above hearts and stars */
     }
 
     /* Different Fish Swimming Animations */
@@ -146,18 +146,19 @@
       100% { left: 100%; top: 40%; }
     }
 
+    /* Cute Heart and Star Decorations */
     .hearts {
       position: absolute;
       font-size: 40px;
       animation: floatHearts 4s infinite;
-      z-index: 1;
+      z-index: 3; /* Hearts on a lower layer than the fish */
     }
 
     .stars {
       position: absolute;
       font-size: 30px;
       animation: floatStars 5s infinite;
-      z-index: 1;
+      z-index: 4; /* Stars on a lower layer than the fish */
     }
 
     @keyframes floatHearts {
