@@ -1,43 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Alex Pan - Contact Info</title>
+  <meta charset="UTF-8">
+  <title>Save Alex's Contact</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 2em;
-      background-color: #f9f9f9;
-      color: #333;
-    }
-    .contact-card {
-      background: #fff;
-      padding: 2em;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      max-width: 500px;
-      margin: auto;
-    }
-    h1 {
-      font-size: 24px;
-      margin-bottom: 0.5em;
-    }
-    p {
-      margin: 0.5em 0;
-    }
-    a {
-      color: #007bff;
-      text-decoration: none;
-    }
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .hidden { display: none; }
   </style>
 </head>
 <body>
-  <div class="contact-card">
-    <h1>Alex Pan</h1>
-    <p><strong>Email:</strong> <a href="mailto:infoalexpri@gmail.com">infoalexpri@gmail.com</a></p>
-    <p><strong>Phone:</strong> <a href="tel:6466009600">646-600-9600</a></p>
-    <p><strong>Instagram:</strong> <a href="https://www.instagram.com/p.alexfitness/" target="_blank">@p.alexfitness</a></p>
-  </div>
+
+<h1>Save Contact</h1>
+<p id="message">Loading...</p>
+<a id="saveLink" class="hidden" download="AlexPan.vcf">Save to Contacts</a>
+
+<script>
+  function getVCardData() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('vcard');
+  }
+
+  function init() {
+    const vcardEncoded = getVCardData();
+    const message = document.getElementById('message');
+    const saveLink = document.getElementById('saveLink');
+
+    if (!vcardEncoded) {
+      message.textContent = "No contact info available. Please scan the NFC tag.";
+      return;
+    }
+
+    const vcardDecoded = decodeURIComponent(vcardEncoded);
+
+    const blob = new Blob([vcardDecoded], { type: 'text/vcard;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+
+    saveLink.href = url;
+    saveLink.classList.remove('hidden');
+    message.textContent = "Tap below to save the contact:";
+  }
+
+  window.onload = init;
+</script>
+
 </body>
 </html>
