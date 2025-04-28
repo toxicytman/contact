@@ -114,7 +114,6 @@
       animation: swim 20s linear infinite;
     }
 
-    /* Adjust to ensure the fish spread correctly */
     .fish:nth-child(1) { animation-duration: 15s; top: 20%; left: -100px; }
     .fish:nth-child(2) { animation-duration: 18s; top: 40%; left: -100px; }
     .fish:nth-child(3) { animation-duration: 12s; top: 60%; left: -100px; }
@@ -192,7 +191,7 @@
           data.phone = parts[1];
         } else if (line.startsWith('X-SOCIALPROFILE')) {
           const parts = line.split(':');
-          data.instagram = parts[1];
+          data.instagram = parts[1];  // Instagram link from the vCard directly
         }
       });
 
