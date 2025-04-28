@@ -146,10 +146,50 @@
       100% { left: 100%; top: 40%; }
     }
 
+    .hearts {
+      position: absolute;
+      font-size: 40px;
+      animation: floatHearts 4s infinite;
+      z-index: 1;
+    }
+
+    .stars {
+      position: absolute;
+      font-size: 30px;
+      animation: floatStars 5s infinite;
+      z-index: 1;
+    }
+
+    @keyframes floatHearts {
+      0% { transform: translateY(0); opacity: 1; }
+      50% { transform: translateY(-50px); opacity: 0.7; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes floatStars {
+      0% { transform: translateY(0); opacity: 1; }
+      50% { transform: translateY(-30px); opacity: 0.8; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 </head>
 <body>
+
+  <!-- Cute Hearts Floating Around -->
+  <div class="hearts" style="top: 10%; left: 5%;">❤️</div>
+  <div class="hearts" style="top: 20%; left: 20%;">💖</div>
+  <div class="hearts" style="top: 30%; left: 40%;">💘</div>
+  <div class="hearts" style="top: 50%; left: 60%;">💝</div>
+  <div class="hearts" style="top: 70%; left: 80%;">💗</div>
+
+  <!-- Cute Stars Floating Around -->
+  <div class="stars" style="top: 5%; left: 50%;">⭐</div>
+  <div class="stars" style="top: 15%; left: 10%;">🌟</div>
+  <div class="stars" style="top: 25%; left: 75%;">✨</div>
+  <div class="stars" style="top: 35%; left: 30%;">🌟</div>
+  <div class="stars" style="top: 45%; left: 60%;">⭐</div>
 
   <!-- Fish Animation -->
   <div class="fish" style="top: 30%; left: 10%;">🐠</div>
