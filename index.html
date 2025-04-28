@@ -126,10 +126,30 @@
       100% { left: 100%; }
     }
 
+    /* Floating Hearts */
+    .hearts {
+      position: absolute;
+      font-size: 40px;
+      animation: floatHearts 4s infinite;
+      z-index: 1;
+    }
+
+    @keyframes floatHearts {
+      0% { transform: translateY(0); opacity: 1; }
+      50% { transform: translateY(-50px); opacity: 0.7; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 </head>
 <body>
+
+  <!-- Cute Hearts Floating Around -->
+  <div class="hearts" style="top: 10%; left: 5%;">❤️</div>
+  <div class="hearts" style="top: 20%; left: 20%;">💖</div>
+  <div class="hearts" style="top: 30%; left: 40%;">💘</div>
+  <div class="hearts" style="top: 50%; left: 60%;">💝</div>
+  <div class="hearts" style="top: 70%; left: 80%;">💗</div>
 
   <!-- Fish Animation -->
   <div class="fish">🐠</div>
