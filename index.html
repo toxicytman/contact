@@ -208,7 +208,7 @@
     <h1 id="fullName">Full Name</h1>
     <p><strong>Email:</strong> <span id="email"></span></p>
     <p><strong>Phone:</strong> <span id="phone"></span></p>
-    <p><strong>Instagram:</strong> <a id="instagram" href="https://www.instagram.com/p.alexfitness" target="_blank">View Profile</a></p>
+    <p><strong>Instagram:</strong> <a id="instagram" href="#" target="_blank">View Profile</a></p>
     <a id="saveLink" class="button hidden" download="contact.vcf">Save to Contacts</a>
   </div>
 
@@ -251,27 +251,30 @@
       const saveLink = document.getElementById('saveLink');
 
       if (!vcardDecoded) {
-        loading.innerHTML = "<p>No contact info found. Please scan the NFC tag again.</p>";
+        loading.innerHTML = '<p>No contact data found.</p>';
         return;
       }
 
-      const contact = parseVCard(vcardDecoded);
+      const vcard = parseVCard(vcardDecoded);
 
-      fullName.textContent = contact.fullName || 'N/A';
-      email.textContent = contact.email || 'N/A';
-      phone.textContent = contact.phone || 'N/A';
-      instagram.href = "https://www.instagram.com/p.alexfitness";
-      instagram.textContent = "Instagram Profile";
+      if (vcard) {
+        fullName.textContent = vcard.fullName;
+        email.textContent = vcard.email;
+        phone.textContent = vcard.phone;
+        instagram.href = vcard.instagram;
+        instagram.textContent = vcard.instagram;
 
-      const blob = new Blob([vcardDecoded], { type: 'text/vcard;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      saveLink.href = url;
-      saveLink.classList.remove('hidden');
+        // Create a vCard file
+        const vCardFile = `BEGIN:VCARD\nVERSION:3.0\nFN:${vcard.fullName}\nEMAIL:${vcard.email}\nTEL:${vcard.phone}\nX-SOCIALPROFILE:${vcard.instagram}\nEND:VCARD`;
+        const blob = new Blob([vCardFile], { type: 'text/vcard' });
+        const vCardUrl = URL.createObjectURL(blob);
+        saveLink.href = vCardUrl;
+        saveLink.classList.remove('hidden');
 
-      setTimeout(() => {
-        loading.style.display = 'none';
+        // Show contact card
         contactCard.classList.remove('hidden');
-      }, 1500);
+        loading.classList.add('hidden');
+      }
     }
 
     window.onload = init;
