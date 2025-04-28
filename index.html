@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Info - Alex Pan</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2em;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    .contact-card {
+      background: #fff;
+      padding: 1.5em;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      max-width: 400px;
+      margin: auto;
+    }
+    h1 {
+      margin-top: 0;
+      font-size: 1.5em;
+    }
+    .field {
+      margin-bottom: 1em;
+    }
+    .field label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 0.3em;
+    }
+    .field a {
+      color: #007BFF;
+      text-decoration: none;
+    }
+    .field a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="contact-card" id="contact">
+    <h1>Contact Info</h1>
+    <div id="output">Loading...</div>
+  </div>
+
+  <script>
+    (function() {
+      function parseVCard(vcard) {
+        const lines = vcard.split(/\\r?\\n/);
+        const data = {};
+        lines.forEach(line => {
+          if (line.startsWith('FN:')) {
+            data.name = line.substring(3);
+          } else if (line.startsWith('N:')) {
+            data.fullName = line.substring(2);
+          } else if (line.startsWith('EMAIL')) {
+            const parts = line.split(':');
+            data.email = parts[1];
+          } else if (line.startsWith('TEL')) {
+            const parts = line.split(':');
+            data.phone = parts[1];
+          } else if (line.startsWith('X-SOCIALPROFILE')) {
+            const parts = line.split(':');
+            data.social = parts[1];
+          }
+        });
+        return data;
+      }
+
+      const hash = window.location.hash;
+      if (!hash) {
+        document.getElementById('output').innerHTML = '<p>No contact data found.</p>';
+        return;
+      }
+
+      try {
+        const decoded = decodeURIComponent(hash.substring(1));
+        const contact = parseVCard(decoded);
+        const output = document.getElementById('output');
+        output.innerHTML = '';
+
+        if (contact.name) {
+          const nameField = document.createElement('div');
+          nameField.className = 'field';
+          nameField.innerHTML = '<label>Name:</label><div>' + contact.name + '</div>';
+          output.appendChild(nameField);
+        }
+
+        if (contact.email) {
+          const emailField = document.createElement('div');
+          emailField.className = 'field';
+          emailField.innerHTML = '<label>Email:</label><div><a href="mailto:' + contact.email + '">' + contact.email + '</a></div>';
+          output.appendChild(emailField);
+        }
+
+        if (contact.phone) {
+          const phoneField = document.createElement('div');
+          phoneField.className = 'field';
+          phoneField.innerHTML = '<label>Phone:</label><div><a href="tel:' + contact.phone + '">' + contact.phone + '</a></div>';
+          output.appendChild(phoneField);
+        }
+
+        if (contact.social) {
+          const socialField = document.createElement('div');
+          socialField.className = 'field';
+          socialField.innerHTML = '<label>Instagram:</label><div><a href="' + contact.social + '" target="_blank">' + contact.social + '</a></div>';
+          output.appendChild(socialField);
+        }
+      } catch (e) {
+        document.getElementById('output').innerHTML = '<p>Error decoding contact data.</p>';
+      }
+    })();
+  </script>
+</body>
+</html>
