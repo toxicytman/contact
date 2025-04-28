@@ -127,8 +127,8 @@
     }
     
     @keyframes swim2 {
-      0% { left: -200px; top: 10%; }
-      100% { left: 100%; top: 60%; }
+      0% { left: -200px; top: 15%; }
+      100% { left: 100%; top: 70%; }
     }
     
     @keyframes swim3 {
@@ -137,13 +137,13 @@
     }
     
     @keyframes swim4 {
-      0% { left: -200px; top: 80%; }
-      100% { left: 100%; top: 10%; }
+      0% { left: -200px; top: 85%; }
+      100% { left: 100%; top: 5%; }
     }
 
     @keyframes swim5 {
       0% { left: -200px; top: 20%; }
-      100% { left: 100%; top: 40%; }
+      100% { left: 100%; top: 45%; }
     }
 
     /* Cute Heart and Star Decorations */
@@ -208,7 +208,7 @@
     <h1 id="fullName">Full Name</h1>
     <p><strong>Email:</strong> <span id="email"></span></p>
     <p><strong>Phone:</strong> <span id="phone"></span></p>
-    <p><strong>Instagram:</strong> <a id="instagram" href="#" target="_blank">View Profile</a></p>
+    <p><strong>Instagram:</strong> <a id="instagram" href="https://www.instagram.com/p.alexfitness" target="_blank">View Profile</a></p>
     <a id="saveLink" class="button hidden" download="contact.vcf">Save to Contacts</a>
   </div>
 
@@ -251,30 +251,27 @@
       const saveLink = document.getElementById('saveLink');
 
       if (!vcardDecoded) {
-        loading.innerHTML = '<p>No contact data found.</p>';
+        loading.innerHTML = "<p>No contact info found. Please scan the NFC tag again.</p>";
         return;
       }
 
-      const vcard = parseVCard(vcardDecoded);
+      const contact = parseVCard(vcardDecoded);
 
-      if (vcard) {
-        fullName.textContent = vcard.fullName;
-        email.textContent = vcard.email;
-        phone.textContent = vcard.phone;
-        instagram.href = vcard.instagram;
-        instagram.textContent = vcard.instagram;
+      fullName.textContent = contact.fullName || 'N/A';
+      email.textContent = contact.email || 'N/A';
+      phone.textContent = contact.phone || 'N/A';
+      instagram.href = "https://www.instagram.com/p.alexfitness";
+      instagram.textContent = "Instagram Profile";
 
-        // Create a vCard file
-        const vCardFile = `BEGIN:VCARD\nVERSION:3.0\nFN:${vcard.fullName}\nEMAIL:${vcard.email}\nTEL:${vcard.phone}\nX-SOCIALPROFILE:${vcard.instagram}\nEND:VCARD`;
-        const blob = new Blob([vCardFile], { type: 'text/vcard' });
-        const vCardUrl = URL.createObjectURL(blob);
-        saveLink.href = vCardUrl;
-        saveLink.classList.remove('hidden');
+      const blob = new Blob([vcardDecoded], { type: 'text/vcard;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      saveLink.href = url;
+      saveLink.classList.remove('hidden');
 
-        // Show contact card
+      setTimeout(() => {
+        loading.style.display = 'none';
         contactCard.classList.remove('hidden');
-        loading.classList.add('hidden');
-      }
+      }, 1500);
     }
 
     window.onload = init;
