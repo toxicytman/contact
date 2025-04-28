@@ -106,7 +106,7 @@
       display: none;
     }
 
-    /* Sparkle Effect */
+    /* Sparkle Effect with Image */
     .sparkle {
       position: absolute;
       top: 20%;
@@ -114,6 +114,11 @@
       transform: translateX(-50%);
       z-index: 5;
       animation: sparkle 2s linear infinite;
+    }
+
+    .sparkle img {
+      width: 50px;
+      height: 50px;
     }
 
     @keyframes sparkle {
@@ -134,17 +139,25 @@
       100% { left: 100%; top: 50%; }
     }
 
+    /* Extra Fish */
+    .fish:nth-child(2) { animation-duration: 10s; }
+    .fish:nth-child(3) { animation-duration: 12s; }
+    .fish:nth-child(4) { animation-duration: 14s; }
+    .fish:nth-child(5) { animation-duration: 16s; }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 </head>
 <body>
 
-  <!-- Sparkles -->
-  <div class="sparkle">✨</div>
+  <!-- Sparkles with Image -->
+  <div class="sparkle"><img src="https://i.pinimg.com/736x/2a/a9/b4/2aa9b4726d7a099a838f3ddcf18302f4.jpg" alt="Sparkle"></div>
 
   <!-- Fish Animation -->
   <div class="fish" style="top: 40%; left: 10%;">🐠</div>
   <div class="fish" style="top: 60%; left: 15%;">🐟</div>
+  <div class="fish" style="top: 50%; left: 30%;">🐡</div>
+  <div class="fish" style="top: 70%; left: 50%;">🐠</div>
+  <div class="fish" style="top: 80%; left: 70%;">🐟</div>
 
   <div id="loading">
     <div class="spinner"></div>
@@ -158,10 +171,6 @@
     <p><strong>Instagram:</strong> <a id="instagram" href="#" target="_blank">View Profile</a></p>
     <a id="saveLink" class="button hidden" download="contact.vcf">Save to Contacts</a>
   </div>
-
-  <audio id="oceanSound" loop autoplay>
-    <source src="https://www.orangefreesounds.com/wp-content/uploads/2019/11/Gentle-Ocean-Waves.mp3" type="audio/mp3">
-  </audio>
 
   <script>
     function getVCardDataFromHash() {
