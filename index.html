@@ -6,13 +6,15 @@
   <style>
     body {
       font-family: 'Poppins', Arial, sans-serif;
-      background: linear-gradient(to bottom, #cfeffd, #ffffff);
+      background: url('https://www.transparenttextures.com/patterns/ocean-wave.png') repeat, linear-gradient(to bottom, #cfeffd, #ffffff);
       display: flex;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
       margin: 0;
       padding: 20px;
+      overflow: hidden;
+      position: relative;
     }
 
     .card {
@@ -27,6 +29,7 @@
       transform: translateY(20px);
       animation: fadeInUp 0.8s forwards;
       border: 2px solid #a7d5f2;
+      z-index: 10;
     }
 
     @keyframes fadeInUp {
@@ -37,7 +40,8 @@
     }
 
     h1 {
-      font-size: 24px;
+      font-family: 'Pacifico', cursive;
+      font-size: 30px;
       margin-bottom: 10px;
       color: #045d75;
     }
@@ -62,7 +66,7 @@
       display: inline-block;
       margin-top: 20px;
       padding: 10px 22px;
-      background: #4dc4ff;
+      background: linear-gradient(135deg, #4dc4ff, #34b0e2);
       color: white;
       border: none;
       border-radius: 12px;
@@ -101,86 +105,127 @@
     .hidden {
       display: none;
     }
+
+    /* Sparkle Effect */
+    .sparkle {
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 5;
+      animation: sparkle 2s linear infinite;
+    }
+
+    @keyframes sparkle {
+      0% { opacity: 0; }
+      50% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    /* Fish Animation */
+    .fish {
+      position: absolute;
+      animation: swim 15s infinite linear;
+      z-index: 2;
+    }
+
+    @keyframes swim {
+      0% { left: -200px; top: 30%; }
+      100% { left: 100%; top: 50%; }
+    }
+
   </style>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<div id="loading">
-  <div class="spinner"></div>
-  <p>Loading your contact...</p>
-</div>
+  <!-- Sparkles -->
+  <div class="sparkle">✨</div>
 
-<div id="contactCard" class="card hidden">
-  <h1 id="fullName">Full Name</h1>
-  <p><strong>Email:</strong> <span id="email"></span></p>
-  <p><strong>Phone:</strong> <span id="phone"></span></p>
-  <p><strong>Instagram:</strong> <a id="instagram" href="#" target="_blank">View Profile</a></p>
-  <a id="saveLink" class="button hidden" download="contact.vcf">Save to Contacts</a>
-</div>
+  <!-- Fish Animation -->
+  <div class="fish" style="top: 40%; left: 10%;">🐠</div>
+  <div class="fish" style="top: 60%; left: 15%;">🐟</div>
 
-<script>
-  function getVCardDataFromHash() {
-    const hash = window.location.hash.substring(1);
-    return hash ? decodeURIComponent(hash) : null;
-  }
+  <div id="loading">
+    <div class="spinner"></div>
+    <p>Loading your contact...</p>
+  </div>
 
-  function parseVCard(vcard) {
-    const lines = vcard.split(/\r?\n/);
-    const data = {};
+  <div id="contactCard" class="card hidden">
+    <h1 id="fullName">Full Name</h1>
+    <p><strong>Email:</strong> <span id="email"></span></p>
+    <p><strong>Phone:</strong> <span id="phone"></span></p>
+    <p><strong>Instagram:</strong> <a id="instagram" href="#" target="_blank">View Profile</a></p>
+    <a id="saveLink" class="button hidden" download="contact.vcf">Save to Contacts</a>
+  </div>
 
-    lines.forEach(line => {
-      if (line.startsWith('FN:')) {
-        data.fullName = line.substring(3);
-      } else if (line.startsWith('EMAIL')) {
-        const parts = line.split(':');
-        data.email = parts[1];
-      } else if (line.startsWith('TEL')) {
-        const parts = line.split(':');
-        data.phone = parts[1];
-      } else if (line.startsWith('X-SOCIALPROFILE')) {
-        const parts = line.split(':');
-        data.instagram = parts[1];
-      }
-    });
+  <audio id="oceanSound" loop autoplay>
+    <source src="https://www.orangefreesounds.com/wp-content/uploads/2019/11/Gentle-Ocean-Waves.mp3" type="audio/mp3">
+  </audio>
 
-    return data;
-  }
-
-  async function init() {
-    const vcardDecoded = getVCardDataFromHash();
-    const loading = document.getElementById('loading');
-    const contactCard = document.getElementById('contactCard');
-    const fullName = document.getElementById('fullName');
-    const email = document.getElementById('email');
-    const phone = document.getElementById('phone');
-    const instagram = document.getElementById('instagram');
-    const saveLink = document.getElementById('saveLink');
-
-    if (!vcardDecoded) {
-      loading.innerHTML = "<p>No contact info found. Please scan the NFC tag again.</p>";
-      return;
+  <script>
+    function getVCardDataFromHash() {
+      const hash = window.location.hash.substring(1);
+      return hash ? decodeURIComponent(hash) : null;
     }
 
-    const contact = parseVCard(vcardDecoded);
+    function parseVCard(vcard) {
+      const lines = vcard.split(/\r?\n/);
+      const data = {};
 
-    fullName.textContent = contact.fullName || 'N/A';
-    email.textContent = contact.email || 'N/A';
-    phone.textContent = contact.phone || 'N/A';
-    instagram.href = contact.instagram || '#';
-    instagram.textContent = contact.instagram ? 'Instagram Profile' : 'No Instagram';
+      lines.forEach(line => {
+        if (line.startsWith('FN:')) {
+          data.fullName = line.substring(3);
+        } else if (line.startsWith('EMAIL')) {
+          const parts = line.split(':');
+          data.email = parts[1];
+        } else if (line.startsWith('TEL')) {
+          const parts = line.split(':');
+          data.phone = parts[1];
+        } else if (line.startsWith('X-SOCIALPROFILE')) {
+          const parts = line.split(':');
+          data.instagram = parts[1];
+        }
+      });
 
-    const blob = new Blob([vcardDecoded], { type: 'text/vcard;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    saveLink.href = url;
-    saveLink.classList.remove('hidden');
+      return data;
+    }
 
-    // Hide loading
-    loading.remove();
-    contactCard.classList.remove('hidden');
-  }
+    async function init() {
+      const vcardDecoded = getVCardDataFromHash();
+      const loading = document.getElementById('loading');
+      const contactCard = document.getElementById('contactCard');
+      const fullName = document.getElementById('fullName');
+      const email = document.getElementById('email');
+      const phone = document.getElementById('phone');
+      const instagram = document.getElementById('instagram');
+      const saveLink = document.getElementById('saveLink');
 
-  window.onload = init;
-</script>
+      if (!vcardDecoded) {
+        loading.innerHTML = "<p>No contact info found. Please scan the NFC tag again.</p>";
+        return;
+      }
+
+      const contact = parseVCard(vcardDecoded);
+
+      fullName.textContent = contact.fullName || 'N/A';
+      email.textContent = contact.email || 'N/A';
+      phone.textContent = contact.phone || 'N/A';
+      instagram.href = contact.instagram || '#';
+      instagram.textContent = contact.instagram ? 'Instagram Profile' : 'No Instagram';
+
+      const blob = new Blob([vcardDecoded], { type: 'text/vcard;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      saveLink.href = url;
+      saveLink.classList.remove('hidden');
+
+      // Hide loading
+      loading.remove();
+      contactCard.classList.remove('hidden');
+    }
+
+    window.onload = init;
+  </script>
 
 </body>
 </html>
